@@ -1,46 +1,55 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Header from '@/components/headers'
-import UrlForm from '@/components/url-form'
-import LinksList from '@/components/links-list'
-import { Card } from '@/components/ui/cards'
+import { useState } from "react";
+import Header from "@/components/headers";
+import UrlForm from "@/components/url-form";
+import LinksList from "@/components/links-list";
+import { Card } from "@/components/ui/cards";
+import { useAuth } from "@/provider/AuthContext";
 
 export default function Page() {
+  const { user, loading } = useAuth();
+
   const [links, setLinks] = useState<
     Array<{
-      id: string
-      originalUrl: string
-      shortUrl: string
-      createdAt: string
-      expiresAt: string | null
-      clicks: number
-      isExpired: boolean
+      id: string;
+      originalUrl: string;
+      shortUrl: string;
+      createdAt: string;
+      expiresAt: string | null;
+      clicks: number;
+      isExpired: boolean;
     }>
-  >([])
+  >([]);
 
   const handleCreateLink = (originalUrl: string, expirationOption: string) => {
-    const shortCode = Math.random().toString(36).substring(2, 8).toUpperCase()
-    
-    let expiresAt: string | null = null
-    const now = new Date()
-    
+    const shortCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+    let expiresAt: string | null = null;
+    const now = new Date();
+
     switch (expirationOption) {
-      case '1hour':
-        expiresAt = new Date(now.getTime() + 60 * 60 * 1000).toLocaleString()
-        break
-      case '24hours':
-        expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000).toLocaleString()
-        break
-      case '7days':
-        expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleString()
-        break
-      case '30days':
-        expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toLocaleString()
-        break
-      case 'never':
+      case "1hour":
+        expiresAt = new Date(now.getTime() + 60 * 60 * 1000).toLocaleString();
+        break;
+      case "24hours":
+        expiresAt = new Date(
+          now.getTime() + 24 * 60 * 60 * 1000
+        ).toLocaleString();
+        break;
+      case "7days":
+        expiresAt = new Date(
+          now.getTime() + 7 * 24 * 60 * 60 * 1000
+        ).toLocaleString();
+        break;
+      case "30days":
+        expiresAt = new Date(
+          now.getTime() + 30 * 24 * 60 * 60 * 1000
+        ).toLocaleString();
+        break;
+      case "never":
       default:
-        expiresAt = null
+        expiresAt = null;
     }
 
     const newLink = {
@@ -51,16 +60,22 @@ export default function Page() {
       expiresAt,
       clicks: 0,
       isExpired: false,
-    }
-    setLinks([newLink, ...links])
-  }
+    };
+    setLinks([newLink, ...links]);
+  };
 
   const handleDeleteLink = (id: string) => {
-    setLinks(links.filter((link) => link.id !== id))
+    setLinks(links.filter((link) => link.id !== id));
+  };
+
+  let username = "";
+
+  if (!loading && user) {
+    username = user.data.username;
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen ">
       <Header />
 
       <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
@@ -70,7 +85,8 @@ export default function Page() {
             Shorten Your URLs
           </h1>
           <p className="text-lg text-muted-foreground">
-            Create clean, shareable links and track their performance in real-time
+            Create clean, shareable links and track their performance in
+            real-time {username}
           </p>
         </div>
 
@@ -85,13 +101,10 @@ export default function Page() {
 
           {/* Links List Section */}
           <div className="lg:col-span-2">
-            <LinksList
-              links={links}
-              onDeleteLink={handleDeleteLink}
-            />
+            <LinksList links={links} onDeleteLink={handleDeleteLink} />
           </div>
         </div>
       </div>
     </main>
-  )
+  );
 }
