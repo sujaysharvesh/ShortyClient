@@ -1,12 +1,35 @@
 @import "tailwindcss";
 
-body {
-  font-family: 'Georgia', serif;
-  background-color: #fef3c7;
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f7f5f3;
+  --foreground: #37322f;
+  --foreground-muted: #37322f/70;
+  --border: #37322f/12;
+  --card: #ffffff;
+  --card-hover: #f7f5f3;
 }
 
+.dark {
+  --background: #1a1a1a;
+  --foreground: #e5e1db;
+  --foreground-muted: #e5e1db/70;
+  --border: #e5e1db/12;
+  --card: #2a2a2a;
+  --card-hover: #333333;
+}
 
+body {
+  font-family: 'Georgia', serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  transition: background-color 0.3s, color 0.3s;
+}
 
-
-
-
+/* Optional: Smooth theme transition for all elements */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
+}

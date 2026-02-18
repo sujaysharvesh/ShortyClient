@@ -8,6 +8,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  console.log("Fetching user info..." + BASE_URL);
 
   useEffect(() => {
     fetch(  `${BASE_URL}/api/v1/user/me`, {

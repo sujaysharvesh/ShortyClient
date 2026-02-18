@@ -124,13 +124,6 @@ const BASE_URL= "http://localhost:2002"
 
   return (
     <div className="min-h-screen bg-[#f7f5f3] flex flex-col">
-      <header className="w-full border-b border-[#37322f]/6">
-        <div className="max-w-[1060px] mx-auto px-4 py-4">
-          <Link href="/" className="text-[#37322f] font-serif text-2xl hover:text-[#37322f]/80">
-            Olai
-          </Link>
-        </div>
-      </header>
       
       {/* Main Content - Moved up with reduced padding */}
       <div className="flex-1 flex items-center justify-center px-4 py-6">

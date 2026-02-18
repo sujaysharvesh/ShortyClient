@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ArrowRight, Zap, BarChart2, Clock, Sparkles } from 'lucide-react'
+import { ArrowRight, Zap, BarChart2, Clock } from 'lucide-react'
+import ExpirationDropdown from './ExpirationDropdown'
+
 
 interface UrlFormProps {
   onCreateLink: (url: string, expiration: string) => void
@@ -12,6 +14,14 @@ export default function UrlForm({ onCreateLink }: UrlFormProps) {
   const [expiration, setExpiration] = useState('never')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  const expirationOptions = [
+    { value: 'never', label: 'Never Expires' },
+    { value: '1hour', label: 'Expires in 1 Hour' },
+    { value: '24hours', label: 'Expires in 24 Hours' },
+    { value: '7days', label: 'Expires in 7 Days' },
+    { value: '30days', label: 'Expires in 30 Days' },
+  ]
 
   const isValidUrl = (urlString: string) => {
     try {
@@ -45,8 +55,7 @@ export default function UrlForm({ onCreateLink }: UrlFormProps) {
   }
 
   return (
-    <div className="flex rounded-2xl shadow-sm p-8 border flex-col gap-4">
-      {/* Heading */}
+    <div className="flex rounded-2xl shadow-sm p-8 border border-[#37322f]/12 flex-col gap-4">
       <div className="flex flex-col gap-1 mb-2">
         <h1 className="text-3xl font-serif text-[#37322f]">
           Shorten your link
@@ -75,24 +84,16 @@ export default function UrlForm({ onCreateLink }: UrlFormProps) {
           )}
         </div>
 
-        {/* Expiration Select */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-[#37322f]">
+        {/* Modern Select Component */}
+        <h4>
+          <span className="text-sm font-medium text-[#37322f]">
             Link Expiration
-          </label>
-          <select
-            value={expiration}
-            onChange={(e) => setExpiration(e.target.value)}
-            disabled={loading}
-            className="px-4 py-2.5 rounded-lg border border-[#37322f]/12 bg-white text-[#37322f] focus:outline-none focus:ring-2 focus:ring-[#37322f]/50 focus:border-transparent text-sm w-full disabled:opacity-50 cursor-pointer"
-          >
-            <option value="never">Never Expires</option>
-            <option value="1hour">Expires in 1 Hour</option>
-            <option value="24hours">Expires in 24 Hours</option>
-            <option value="7days">Expires in 7 Days</option>
-            <option value="30days">Expires in 30 Days</option>
-          </select>
-        </div>
+          </span>
+        </h4>
+        <ExpirationDropdown
+        value={expiration}
+        onChange={setExpiration}
+      />
 
         {/* Submit Button */}
         <button

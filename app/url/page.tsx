@@ -71,11 +71,11 @@ export default function Page() {
       <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
         {/* Hero */}
         <div className="mb-12 text-center">
-          <h1 className="mb-4 text-5xl font-bold tracking-tight text-foreground">
+          {/* <h1 className="mb-4 text-5xl font-bold tracking-tight text-foreground">
             Shorten Your URLs
-          </h1>
+          </h1> */}
           <p className="text-lg text-muted-foreground">
-            Create clean, shareable links and track their performance —
+            Create clean, shareable links and track their performance
             {/* <span className="font-semibold"> {user.data.username}</span> */}
           </p>
         </div>

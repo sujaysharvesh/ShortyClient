@@ -1,38 +1,37 @@
-'use client'
+"use client"
 
-import { Link as LinkIcon } from 'lucide-react'
+import Link from "next/link"
+import { Link2 } from "lucide-react"
+import Logout from "./logout"
+import { useAuth } from "@/provider/AuthContext"
 
 export default function Header() {
+  const { user } = useAuth()
+
   return (
-    <header className="border-b border-amber-200 bg-white shadow-sm">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+    <header className="mt-3 z-50 w-full px-3 sm:px-0">
+      <div className="mx-auto max-w-7xl rounded-2xl border border-white/10 bg-[#1a1a1a] shadow-sm">
+        <div className="flex h-14 items-center justify-between px-4 sm:h-16 sm:px-6">
+
           {/* Logo */}
-          <div className="flex items-center gap-2.5">
-            <div className="rounded-lg bg-amber-500 p-1.5">
-              <LinkIcon className="size-5 text-white" />
-            </div>
-            <div>
-              <span className="text-lg font-bold text-amber-900">LinkShort</span>
-              <p className="text-xs text-amber-500 leading-none">Fast URL Shortener</p>
-            </div>
+          <Link href="/" className="flex items-center gap-2">
+            <Link2 className="h-5 w-5 text-[#e5e1db] sm:h-6 sm:w-6" />
+            <span className="text-lg font-bold text-[#e5e1db] sm:text-xl">
+              ShortyURL
+            </span>
+          </Link>
+
+          {/* Right side */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {user && (
+              <span className="hidden sm:block text-sm text-white/70">
+                {user.data?.username}
+              </span>
+            )}
+
+            <Logout variant="icon" />
           </div>
 
-          {/* Nav */}
-          <nav className="flex items-center gap-6">
-            <a href="#" className="text-sm font-medium text-amber-700 hover:text-amber-900 transition-colors">
-              About
-            </a>
-            <a href="#" className="text-sm font-medium text-amber-700 hover:text-amber-900 transition-colors">
-              Pricing
-            </a>
-            <a
-              href="#"
-              className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-bold text-white hover:bg-amber-600 transition-colors shadow-sm"
-            >
-              Get Started
-            </a>
-          </nav>
         </div>
       </div>
     </header>

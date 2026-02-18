@@ -5,6 +5,7 @@ import { ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BASE_URL } from "@/lib/config";
+import Header from "@/components/headers";
 
 
 interface FormData {
@@ -103,9 +104,6 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-[#f7f5f3] flex flex-col">
-      <header className="w-full border-b border-[#37322f]/6">
-      </header>
-      
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center px-4 py-6">
         <div className="w-full max-w-[420px]">
