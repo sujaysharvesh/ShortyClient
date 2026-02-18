@@ -56,16 +56,16 @@ export default function Page() {
   };
   
 
-  if (loading || fetching) {
-    return <p className="p-10 text-center">Loading...</p>;
-  }
+  // if (loading || fetching) {
+  //   return <p className="p-10 text-center">Loading...</p>;
+  // }
 
-  if (!user) {
-    return <p className="p-10 text-center">Not logged in</p>;
-  }
+  // if (!user) {
+  //   return <p className="p-10 text-center">Not logged in</p>;
+  // }
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-[#f7f5f3]">
       <Header />
 
       <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
@@ -76,12 +76,12 @@ export default function Page() {
           </h1>
           <p className="text-lg text-muted-foreground">
             Create clean, shareable links and track their performance —
-            <span className="font-semibold"> {user.data.username}</span>
+            {/* <span className="font-semibold"> {user.data.username}</span> */}
           </p>
         </div>
 
         {/* Main Content */}
-        <div className="grid gap-8 lg:grid-cols-3">
+        <div className="grid gap-8 lg:grid-cols-1">
           {/* Form */}
           <div className="lg:col-span-1">
             <Card className="sticky top-4 border-border bg-card p-6">
