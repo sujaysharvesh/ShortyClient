@@ -13,10 +13,8 @@ interface FormData {
 }
 
 export default function Register() {
-
-const BASE_URL= "http://localhost:2002"
   
-//   console.log("Base URL in Register component:", BASE_URL);
+  console.log("Base URL in Register component:", BASE_URL);
   const [formData, setFormData] = useState<FormData>({
     username: "",
     email: "",
@@ -96,6 +94,7 @@ const BASE_URL= "http://localhost:2002"
       if (!response.ok) {
         // setError(data.error || "Registration failed");
         setIsLoading(false);
+        setError("Registration failed: " + response);
         return;
       }
 

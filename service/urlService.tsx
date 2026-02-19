@@ -8,6 +8,7 @@ export const urlService = {
     async shortenUrl(originalUrl: string, expirationOption: number): Promise<UrlResponse> {
         try {
             const expiresInDays = expirationMap[expirationOption];
+            console.log("Shortening URL expiresInDays", expiresInDays);
             const res = await fetch(`${BASE_URL}/api/v1/url/shorten`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -62,10 +63,10 @@ export const urlService = {
 }
 
 const expirationMap: Record<string, number | null> = {
-    "1hour": 1 / 24,
-    "24hours": 1,
-    "7days": 7,
-    "30days": 30,
-    "never": null,
-  };
+  "1hour": 60,
+  "24hours": 1440,
+  "7days": 10080,
+  "30days": 43200,
+};
+
   

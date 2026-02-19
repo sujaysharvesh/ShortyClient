@@ -8,10 +8,11 @@ import { Card } from "@/components/ui/cards";
 import { useAuth } from "@/provider/AuthContext";
 import { UrlResponse } from "@/types/url";
 import { urlService } from "@/service/urlService";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const { user, loading } = useAuth();
-
+  const router = useRouter();
   const [links, setLinks] = useState<UrlResponse[]>([]);
   const [fetching, setFetching] = useState(true);
 
@@ -60,9 +61,27 @@ export default function Page() {
   //   return <p className="p-10 text-center">Loading...</p>;
   // }
 
-  // if (!user) {
-  //   return <p className="p-10 text-center">Not logged in</p>;
-  // }
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace("/login");
+    }
+  }, [loading, user, router]);
+
+  // Fetch URLs
+  useEffect(() => {
+    if (!loading && user) {
+      urlService
+        .getUserUrls()
+        .then(setLinks)
+        .finally(() => setFetching(false));
+    }
+  }, [loading, user]);
+
+  if (loading || fetching) {
+    return <p className="p-10 text-center">Loading...</p>;
+  }
+
+  if (!user) return null;
 
   return (
     <main className="min-h-screen bg-[#f7f5f3]">
@@ -75,8 +94,8 @@ export default function Page() {
             Shorten Your URLs
           </h1> */}
           <p className="text-lg text-muted-foreground">
-            Create clean, shareable links and track their performance
-            {/* <span className="font-semibold"> {user.data.username}</span> */}
+            Create clean, shareable links and track their performance - 
+            <span className="font-semibold"> {user.data.username}</span>
           </p>
         </div>
 

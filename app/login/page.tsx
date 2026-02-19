@@ -92,7 +92,7 @@ export default function Login() {
         return;
       }
   
-      router.push("/");
+      router.push("/url");
     } catch (err) {
       console.error("Login error:", err);
       setError("Something went wrong. Please try again.");
