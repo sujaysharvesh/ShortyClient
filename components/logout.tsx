@@ -28,13 +28,13 @@ export default function Logout({ variant = 'button', className = '' }: LogoutPro
         },
       })
 
-      if (response.ok) {
-        logout() // Clear auth context
-        router.push('/login')
-        router.refresh() // Refresh server components
-      } else {
-        console.error('Logout failed')
-      }
+      if (!response.ok) {
+        const text = await response.text();
+        console.error('Logout failed:', text);
+      } 
+      // logout() 
+      router.push('/login')
+      router.refresh()
     } catch (error) {
       console.error('Logout error:', error)
     } finally {

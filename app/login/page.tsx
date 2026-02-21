@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BASE_URL } from "@/lib/config";
 import Header from "@/components/headers";
+import { useAuth } from "@/provider/AuthContext";
 
 
 interface FormData {
@@ -27,6 +28,7 @@ export default function Login() {
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const { refreshUser } = useAuth();
 
 //   const handleEmailLogin = async (e: React.FormEvent) => {
 //     e.preventDefault();
@@ -91,7 +93,9 @@ export default function Login() {
         setLoading(false);
         return;
       }
-  
+
+      await refreshUser();
+
       router.push("/url");
     } catch (err) {
       console.error("Login error:", err);

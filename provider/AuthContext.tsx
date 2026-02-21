@@ -8,19 +8,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  console.log("Fetching user info..." + BASE_URL);
+  const fetchUser = async () => {
+    setLoading(true);
+    const res = await fetch(`${BASE_URL}/api/v1/user/me`, {
+      credentials: "include",
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      setUser(data);
+    } else {
+      setUser(null);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    fetch(  `${BASE_URL}/api/v1/user/me`, {
-      credentials: "include",
-    })
-      .then(res => res.ok ? res.json() : null)
-      .then(data => setUser(data))
-      .finally(() => setLoading(false));
+    fetchUser();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, refreshUser: fetchUser }}>
       {children}
     </AuthContext.Provider>
   );
