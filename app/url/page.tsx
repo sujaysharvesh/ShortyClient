@@ -17,6 +17,18 @@ export default function Page() {
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
+    const url = new URL(window.location.href);
+  
+    if (url.searchParams.has("error")) {
+      url.searchParams.delete("error");
+      window.history.replaceState({}, "", url.pathname);
+    }
+  }, []);
+
+  console.log("User data in URL page:", user);
+
+
+  useEffect(() => {
     if (!loading && user) {
       urlService
         .getUserUrls()
@@ -25,9 +37,10 @@ export default function Page() {
     }
   }, [loading, user]);
 
+
   const handleCreateLink = async (
     originalUrl: string,
-    expirationOption: number
+    expirationOption: string
   ) => {
     try {
       const newUrl = await urlService.shortenUrl(

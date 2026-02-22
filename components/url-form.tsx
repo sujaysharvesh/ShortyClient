@@ -15,14 +15,6 @@ export default function UrlForm({ onCreateLink }: UrlFormProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const expirationOptions = [
-    { value: 'never', label: 'Never Expires' },
-    { value: '1hour', label: 'Expires in 1 Hour' },
-    { value: '24hours', label: 'Expires in 24 Hours' },
-    { value: '7days', label: 'Expires in 7 Days' },
-    { value: '30days', label: 'Expires in 30 Days' },
-  ]
-
   const isValidUrl = (urlString: string) => {
     try {
       new URL(urlString)

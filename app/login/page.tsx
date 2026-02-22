@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import { ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { BASE_URL } from "@/lib/config";
 import Header from "@/components/headers";
 import { useAuth } from "@/provider/AuthContext";
+import { API_URL, OAUTH_URL } from "@/lib/config";
 
 
 interface FormData {
@@ -61,6 +61,11 @@ export default function Login() {
 //     });    
 //   };
 
+console.log("OAUTH_URL in login page", OAUTH_URL, "API_URL in login page", API_URL, "BASE_URL in login page", process.env.NEXT_PUBLIC_BASE_URL);
+const handleGoogleLogin = () => {
+  window.location.href = `${OAUTH_URL}/oauth2/authorize/google`;
+};
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -74,7 +79,7 @@ export default function Login() {
   
     try {
       const response = await fetch(
-        `${BASE_URL}/api/v1/user/login`,
+        `${API_URL}/user/login`,
         {
           method: "POST",
           headers: {
@@ -125,7 +130,7 @@ export default function Login() {
             </div>
 
             <button
-            //   onClick={handleGoogleLogin}
+              onClick={handleGoogleLogin}
               type="button"
               disabled={loading}
               className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-[#37322f]/20 rounded-lg hover:bg-white transition-colors bg-white disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#37322f]/50"

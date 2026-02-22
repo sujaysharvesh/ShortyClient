@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { UrlResponse } from "@/types/url";
 import { CustomCalendar } from "./ui/calender";
+import { urlService } from "@/service/urlService";
 
 interface LinksListProps {
   links: UrlResponse[];
@@ -136,6 +137,10 @@ export default function LinksList({ links, onDeleteLink }: LinksListProps) {
     });
   };
 
+  const handleUrlRedirect = (shortUrl: string) => {
+    window.location.href = shortUrl;
+  };
+
   if (links.length === 0) {
     return (
       <div className="flex rounded-2xl border border-[#37322f]/12 bg-white dark:bg-[#1a1a1a] p-12 text-center">
@@ -155,6 +160,11 @@ export default function LinksList({ links, onDeleteLink }: LinksListProps) {
       </div>
     );
   }
+
+  // links.forEach(link => {
+  //   console.log("Rendering link:", link.shortUrl);
+  // });
+    
 
   return (
     <div className="space-y-4">
@@ -346,7 +356,7 @@ export default function LinksList({ links, onDeleteLink }: LinksListProps) {
                     </button>
                     <button
                       disabled={expiry?.expired}
-                      onClick={() => window.open(link.shortUrl, "_blank")}
+                      onClick={() => handleUrlRedirect(link.shortUrl)}
                       className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition-all ${
                         expiry?.expired
                           ? "cursor-not-allowed opacity-50"

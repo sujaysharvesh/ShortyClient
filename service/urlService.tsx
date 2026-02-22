@@ -1,19 +1,19 @@
-import { BASE_URL } from "@/lib/config";
+import { API_URL, BASE_URL } from "@/lib/config";
 import { ApiResponse } from "@/types/api";
 import { UrlResponse } from "@/types/url";
 
 
 export const urlService = {
 
-    async shortenUrl(originalUrl: string, expirationOption: number): Promise<UrlResponse> {
+    async shortenUrl(originalUrl: string, expirationOption: string): Promise<UrlResponse> {
         try {
-            const expiresInDays = expirationMap[expirationOption];
-            console.log("Shortening URL expiresInDays", expiresInDays);
-            const res = await fetch(`${BASE_URL}/api/v1/url/shorten`, {
+            const expiresInMins = expirationMap[expirationOption];
+            console.log("Shortening URL expiresInDays", expiresInMins);
+            const res = await fetch(`${API_URL}/url/shorten`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: JSON.stringify({ originalUrl, expiresInDays}),
+                body: JSON.stringify({ originalUrl, expiresInMins}),
             });
 
             if (!res.ok) {
@@ -30,7 +30,7 @@ export const urlService = {
 
     async getUserUrls(): Promise<UrlResponse[]> {
         try {
-          const res = await fetch(`${BASE_URL}/api/v1/url/`, {
+          const res = await fetch(`${API_URL}/url/`, {
             credentials: "include",
           });
     
@@ -48,7 +48,7 @@ export const urlService = {
       },
 
       async deleteUrl(shortcode: string): Promise<void> {
-        const res = await fetch(`${BASE_URL}/api/v1/url/${shortcode}`, {
+        const res = await fetch(`${API_URL}/api/v1/url/${shortcode}`, {
           method: "DELETE",
           credentials: "include",
         });
@@ -56,9 +56,15 @@ export const urlService = {
         if (!res.ok) {
           throw new Error("Failed to delete URL");
         }
+      },
+
+      async redirect(shortcode: string) {
+        await fetch(`${API_URL}/${shortcode}`, {
+          method: "GET",
+          credentials: "include",
+        })
       }
       
-
 
 }
 

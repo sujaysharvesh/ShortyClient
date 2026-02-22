@@ -1,15 +1,18 @@
-import { BASE_URL } from "@/lib/config"
+import { API_URL, BASE_URL } from "@/lib/config"
 
 export const userService = {
     async getCurrentUser() {
+      console.log("Fetching current user data from", `${API_URL}/user/me`);
       try {
-        const res = await fetch(`${BASE_URL}/api/v1/user/me`, {
+        const res = await fetch(`${API_URL}/user/me`, {
           credentials: "include",
         });
   
         if (!res.ok) {
           throw new Error("Failed to fetch user data");
         }
+
+        console.log("getCurrentUser response", res);
   
         return await res.json();
       } catch (error) {
@@ -20,7 +23,7 @@ export const userService = {
   
     async login(email: string, password: string) {
       try {
-        const res = await fetch(`${BASE_URL}/api/v1/user/login`, {
+        const res = await fetch(`${API_URL}/user/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -40,7 +43,7 @@ export const userService = {
   
     async register(username: string, email: string, password: string) {
       try {
-        const res = await fetch(`${BASE_URL}/api/v1/user/register`, {
+        const res = await fetch(`${API_URL}/user/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",

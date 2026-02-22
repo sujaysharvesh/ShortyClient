@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
-import { BASE_URL } from "@/lib/config";
+import { API_URL, BASE_URL } from "@/lib/config";
 
 const AuthContext = createContext<any>(null);
 
@@ -10,7 +10,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUser = async () => {
     setLoading(true);
-    const res = await fetch(`${BASE_URL}/api/v1/user/me`, {
+    const res = await fetch(`${API_URL}/user/me`, {
       credentials: "include",
     });
 

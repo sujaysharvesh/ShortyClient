@@ -3,7 +3,7 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { env } from "process";
-import { BASE_URL } from "@/lib/config";
+import { API_URL, BASE_URL, OAUTH_URL } from "@/lib/config";
 
 interface FormData {
   username: string;
@@ -74,7 +74,7 @@ export default function Register() {
     }
 
     try {
-      const response = await fetch( `${BASE_URL}/api/v1/user/register`, {
+      const response = await fetch( `${API_URL}/user/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -107,11 +107,10 @@ export default function Register() {
     }
   };
 
-//   const handleGoogleSignIn = () => {
-//     signIn("google", {
-//       callbackUrl: "/login",
-//     });
-//   };
+  const handleGoogleSignIn = () => {
+    window.location.href = `${OAUTH_URL}/oauth2/authorize/google`;
+
+  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -142,7 +141,7 @@ export default function Register() {
             </div>
 
             <button
-            //   onClick={handleGoogleSignIn}
+              onClick={handleGoogleSignIn}
               type="button"
               disabled={isLoading}
               className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-[#37322f]/20 rounded-lg hover:bg-white transition-colors bg-white disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#37322f]"
