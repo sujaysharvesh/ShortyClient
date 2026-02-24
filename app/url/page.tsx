@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import Header from "@/components/headers";
 import UrlForm from "@/components/url-form";
 import LinksList from "@/components/links-list";
-import { Card } from "@/components/ui/cards";
 import { useAuth } from "@/provider/AuthContext";
 import { UrlResponse } from "@/types/url";
 import { urlService } from "@/service/urlService";
 import { useRouter } from "next/navigation";
 import { Link2 } from "lucide-react";
+import Logout from "@/components/logout";
 
 export default function Page() {
   const { user, loading } = useAuth();
@@ -103,7 +103,7 @@ export default function Page() {
         <circle cx="8%" cy="92%" r="34" stroke="#2a2520" strokeWidth="0.5" fill="none" />
       </svg>
 
-      {/* Header */}
+      {/* Header with Logout */}
       <header
         className="relative z-10 flex items-center justify-between px-8 py-6"
         style={{ borderBottom: "1px solid rgba(42,37,32,0.1)" }}
@@ -127,8 +127,8 @@ export default function Page() {
           </span>
         </div>
 
-        {/* User greeting */}
-        <div className="flex items-center gap-4">
+        {/* User menu with logout */}
+        <div className="flex items-center gap-3">
           <div
             style={{
               display: "flex",
@@ -137,30 +137,33 @@ export default function Page() {
               background: "rgba(42,37,32,0.05)",
               border: "1px solid rgba(42,37,32,0.12)",
               borderRadius: 999,
-              padding: "5px 14px 5px 8px",
+              padding: "4px 14px 4px 4px",
             }}
           >
             <div
               style={{
-                width: 22,
-                height: 22,
+                width: 28,
+                height: 28,
                 background: "#1e1a16",
                 borderRadius: "50%",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: 10,
+                fontSize: 12,
                 color: "#f0ece6",
-                fontWeight: 700,
+                fontWeight: 600,
                 letterSpacing: 0,
               }}
             >
               {user.data.username?.[0]?.toUpperCase() ?? "U"}
             </div>
-            <span style={{ fontSize: 12, color: "#2a2520", letterSpacing: "0.04em" }}>
+            <span style={{ fontSize: 13, color: "#2a2520", fontWeight: 500 }}>
               {user.data.username}
             </span>
           </div>
+          
+          {/* Logout button - icon variant */}
+          <Logout variant="icon" />
         </div>
       </header>
 
@@ -249,7 +252,7 @@ export default function Page() {
 
       {/* Footer */}
       <footer
-        className="relative z-10 px-8 py-5 flex items-center justify-center gap-4"
+        className="relative z-10 px-8 py-5 flex items-center justify-center"
         style={{ borderTop: "1px solid rgba(42,37,32,0.08)" }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -258,10 +261,6 @@ export default function Page() {
             SHORTYURL © 2026
           </span>
         </div>
-        {/* <div style={{ display: "flex", gap: 20, fontSize: 11, color: "#2a2520", opacity: 0.3, letterSpacing: "0.05em" }}>
-          <span style={{ cursor: "pointer" }}>Privacy</span>
-          <span style={{ cursor: "pointer" }}>Terms</span>
-        </div> */}
       </footer>
     </div>
   );

@@ -48,7 +48,7 @@ export const urlService = {
       },
 
       async deleteUrl(shortcode: string): Promise<void> {
-        const res = await fetch(`${API_URL}/api/v1/url/${shortcode}`, {
+        const res = await fetch(`${API_URL}/url/${shortcode}`, {
           method: "DELETE",
           credentials: "include",
         });

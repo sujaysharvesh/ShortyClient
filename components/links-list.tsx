@@ -2,19 +2,11 @@
 
 import React, { useState, useMemo } from "react";
 import {
-  Copy,
-  Trash2,
-  ExternalLink,
-  Link as LinkIcon,
-  Check,
-  Clock,
-  Filter,
-  ChevronRight,
-  X,
+  Copy, Trash2, ExternalLink, Link as LinkIcon,
+  Check, Clock, Filter, ChevronRight, X,
 } from "lucide-react";
 import { UrlResponse } from "@/types/url";
 import { CustomCalendar } from "./ui/calender";
-import { urlService } from "@/service/urlService";
 
 interface LinksListProps {
   links: UrlResponse[];
@@ -27,10 +19,7 @@ export default function LinksList({ links, onDeleteLink }: LinksListProps) {
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<FilterType>("all");
   const [showFilters, setShowFilters] = useState(false);
-  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
-    start: "",
-    end: "",
-  });
+  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({ start: "", end: "" });
 
   const handleCopyUrl = async (shortUrl: string) => {
     try {
@@ -48,177 +37,122 @@ export default function LinksList({ links, onDeleteLink }: LinksListProps) {
     const now = Date.now();
     const diffMs = expireDate - now;
     if (diffMs <= 0)
-      return {
-        text: "Expired",
-        expired: true,
-        className:
-          "bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800",
-      };
+      return { text: "Expired", expired: true, className: "bg-red-50 text-red-700 border border-red-200" };
     const totalMinutes = Math.floor(diffMs / (1000 * 60));
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
     const days = Math.floor(hours / 24);
-    let expiryText =
-      days > 0
-        ? hours > 0
-          ? `${days}d ${hours % 24}h ${minutes}m left`
-          : `${days}d ${minutes}m left`
-        : hours > 0
-        ? `${hours}h ${minutes}m left`
-        : `${minutes}m left`;
-    let className =
-      "bg-[#f7f5f3] dark:bg-[#2a2a2a] text-[#37322f] dark:text-[#e5e1db] border border-[#37322f]/12 dark:border-[#e5e1db]/12";
-    if (totalMinutes < 5)
-      className =
-        "bg-orange-50 dark:bg-orange-950/30 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800";
-    else if (totalMinutes < 30)
-      className =
-        "bg-yellow-50 dark:bg-yellow-950/30 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800";
+    const expiryText = days > 0
+      ? `${days}d ${hours % 24}h left`
+      : hours > 0 ? `${hours}h ${minutes}m left` : `${minutes}m left`;
+    let className = "bg-[#f7f5f3] text-[#37322f] border border-[#37322f]/12";
+    if (totalMinutes < 5) className = "bg-orange-50 text-orange-700 border border-orange-200";
+    else if (totalMinutes < 30) className = "bg-yellow-50 text-yellow-700 border border-yellow-200";
     return { text: expiryText, expired: false, className };
   };
 
-  const filteredLinks = useMemo(
-    () =>
-      links.filter((link) => {
-        const createdAt = new Date(link.createAt);
-        const now = new Date();
-        const isExpired = link.expiresAt
-          ? new Date(link.expiresAt).getTime() < Date.now()
-          : false;
-        switch (filterType) {
-          case "today":
-            return createdAt >= new Date(now.setHours(0, 0, 0, 0));
-          case "week":
-            return createdAt >= new Date(now.setDate(now.getDate() - 7));
-          case "month":
-            return createdAt >= new Date(now.setMonth(now.getMonth() - 1));
-          case "expired":
-            return isExpired;
-          case "active":
-            return !isExpired;
-          default:
-            return true;
-        }
-      }),
-    [links, filterType]
-  );
+  const filteredLinks = useMemo(() => links.filter((link) => {
+    const createdAt = new Date(link.createAt);
+    const now = new Date();
+    const isExpired = link.expiresAt ? new Date(link.expiresAt).getTime() < Date.now() : false;
+    switch (filterType) {
+      case "today": return createdAt >= new Date(now.setHours(0, 0, 0, 0));
+      case "week": return createdAt >= new Date(now.setDate(now.getDate() - 7));
+      case "month": return createdAt >= new Date(now.setMonth(now.getMonth() - 1));
+      case "expired": return isExpired;
+      case "active": return !isExpired;
+      default: return true;
+    }
+  }), [links, filterType]);
 
   const dateFilteredLinks = useMemo(() => {
     if (!dateRange.start && !dateRange.end) return filteredLinks;
     return filteredLinks.filter((link) => {
       const createdAt = new Date(link.createAt).getTime();
       if (dateRange.start && dateRange.end)
-        return (
-          createdAt >= new Date(dateRange.start).getTime() &&
-          createdAt <= new Date(dateRange.end).getTime() + 86400000
-        );
-      if (dateRange.start)
-        return createdAt >= new Date(dateRange.start).getTime();
-      if (dateRange.end)
-        return createdAt <= new Date(dateRange.end).getTime() + 86400000;
+        return createdAt >= new Date(dateRange.start).getTime() && createdAt <= new Date(dateRange.end).getTime() + 86400000;
+      if (dateRange.start) return createdAt >= new Date(dateRange.start).getTime();
+      if (dateRange.end) return createdAt <= new Date(dateRange.end).getTime() + 86400000;
       return true;
     });
   }, [filteredLinks, dateRange]);
 
-  const clearFilters = () => {
-    setFilterType("all");
-    setDateRange({ start: "", end: "" });
-  };
-  const hasActiveFilters =
-    filterType !== "all" || dateRange.start || dateRange.end;
+  const clearFilters = () => { setFilterType("all"); setDateRange({ start: "", end: "" }); };
+  const hasActiveFilters = filterType !== "all" || dateRange.start || dateRange.end;
 
   const formatDateLabel = (iso: string) => {
     if (!iso) return "";
     const [y, m, d] = iso.split("-").map(Number);
-    return new Date(y, m - 1, d).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
-
-  const handleUrlRedirect = (shortUrl: string) => {
-    window.location.href = shortUrl;
+    return new Date(y, m - 1, d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   };
 
   if (links.length === 0) {
     return (
-      <div className="flex rounded-2xl border border-[#37322f]/12 bg-white dark:bg-[#1a1a1a] p-12 text-center">
+      <div className="flex rounded-2xl border border-[#37322f]/12 bg-white p-12 text-center">
         <div className="w-full">
           <div className="mb-4 flex justify-center">
-            <div className="rounded-full bg-[#f7f5f3] dark:bg-[#2a2a2a] p-4">
-              <LinkIcon className="size-8 text-[#37322f]/40 dark:text-[#e5e1db]/40" />
+            <div className="rounded-full bg-[#f7f5f3] p-4">
+              <LinkIcon className="size-8 text-[#37322f]/40" />
             </div>
           </div>
-          <h3 className="mb-2 text-xl font-serif text-[#37322f] dark:text-[#e5e1db]">
-            No links yet
-          </h3>
-          <p className="text-sm text-[#37322f]/70 dark:text-[#e5e1db]/70">
-            Create your first shortened link to get started
-          </p>
+          <h3 className="mb-2 text-xl font-serif text-[#37322f]">No links yet</h3>
+          <p className="text-sm text-[#37322f]/70">Create your first shortened link to get started</p>
         </div>
       </div>
     );
   }
 
-  // links.forEach(link => {
-  //   console.log("Rendering link:", link.shortUrl);
-  // });
-    
-
   return (
     <div className="space-y-4">
+      {/* Header row */}
       <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <h2 className="text-2xl font-serif text-[#37322f] dark:text-[#e5e1db]">
-              Your Links
-            </h2>
-            <span className="rounded-full bg-[#37322f]/10 dark:bg-[#e5e1db]/10 px-3 py-1 text-sm font-medium text-[#37322f] dark:text-[#e5e1db]">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <h2 className="text-xl sm:text-2xl font-serif text-[#37322f] truncate">Your Links</h2>
+            <span className="rounded-full bg-[#37322f]/10 px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium text-[#37322f] shrink-0">
               {dateFilteredLinks.length} / {links.length}
             </span>
           </div>
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
+            className={`flex items-center gap-1.5 sm:gap-2 rounded-lg border px-2.5 sm:px-3 py-2 text-xs sm:text-sm font-medium transition-all shrink-0 ${
               showFilters || hasActiveFilters
-                ? "border-[#37322f] bg-[#37322f] text-white dark:border-[#e5e1db] dark:bg-[#e5e1db] dark:text-[#1a1a1a]"
-                : "border-[#37322f]/12 dark:border-[#e5e1db]/12 bg-white dark:bg-[#2a2a2a] text-[#37322f] dark:text-[#e5e1db] hover:bg-[#f7f5f3] dark:hover:bg-[#333]"
+                ? "border-[#37322f] bg-[#37322f] text-white"
+                : "border-[#37322f]/12 bg-white text-[#37322f] hover:bg-[#f7f5f3]"
             }`}
           >
-            <Filter className="size-4" />
+            <Filter className="size-3.5 sm:size-4" />
             <span>Filters</span>
             {hasActiveFilters && (
-              <span className="ml-1 rounded-full bg-white/20 px-1.5 py-0.5 text-xs">
-                !
-              </span>
+              <span className="ml-0.5 rounded-full bg-white/20 px-1.5 py-0.5 text-xs">!</span>
             )}
           </button>
         </div>
 
         {showFilters && (
-          <div className="rounded-xl border border-[#37322f]/12 dark:border-[#e5e1db]/12 bg-white dark:bg-[#1a1a1a] p-4">
-            <div className="flex flex-col gap-5">
+          <div className="rounded-xl border border-[#37322f]/12 bg-white p-3 sm:p-4">
+            <div className="flex flex-col gap-4 sm:gap-5">
+              {/* Quick filters — FIX: wrap nicely, smaller on mobile */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-widest text-[#37322f]/50 mb-2.5">
+                <label className="block text-xs font-semibold uppercase tracking-widest text-[#37322f]/50 mb-2">
                   Quick Filters
                 </label>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {[
                     { value: "all", label: "All" },
                     { value: "today", label: "Today" },
-                    { value: "week", label: "Last 7 Days" },
-                    { value: "month", label: "Last 30 Days" },
+                    { value: "week", label: "7 Days" },
+                    { value: "month", label: "30 Days" },
                     { value: "active", label: "Active" },
                     { value: "expired", label: "Expired" },
                   ].map((filter) => (
                     <button
                       key={filter.value}
                       onClick={() => setFilterType(filter.value as FilterType)}
-                      className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-all ${
+                      className={`rounded-lg border px-2.5 sm:px-3 py-1.5 text-xs font-medium transition-all ${
                         filterType === filter.value
-                          ? "border-[#37322f] bg-[#37322f] text-white dark:border-[#e5e1db] dark:bg-[#e5e1db] dark:text-[#1a1a1a]"
-                          : "border-[#37322f]/12 dark:border-[#e5e1db]/12 bg-[#f7f5f3] dark:bg-[#2a2a2a] text-[#37322f] dark:text-[#e5e1db] hover:bg-[#e5e1db] dark:hover:bg-[#333]"
+                          ? "border-[#37322f] bg-[#37322f] text-white"
+                          : "border-[#37322f]/12 bg-[#f7f5f3] text-[#37322f] hover:bg-[#e5e1db]"
                       }`}
                     >
                       {filter.label}
@@ -227,57 +161,46 @@ export default function LinksList({ links, onDeleteLink }: LinksListProps) {
                 </div>
               </div>
 
+              {/* Date range — FIX: stack vertically on mobile */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-widest text-[#37322f]/50 mb-2.5">
+                <label className="block text-xs font-semibold uppercase tracking-widest text-[#37322f]/50 mb-2">
                   Date Range
                 </label>
                 <div className="flex flex-col sm:flex-row items-stretch gap-2">
                   <div className="flex-1">
                     <CustomCalendar
                       value={dateRange.start}
-                      onChange={(v) =>
-                        setDateRange((prev) => ({ ...prev, start: v }))
-                      }
-                      placeholder="Select start date"
+                      onChange={(v) => setDateRange((prev) => ({ ...prev, start: v }))}
+                      placeholder="Start date"
                       label="From"
                       maxDate={dateRange.end || undefined}
                     />
                   </div>
-                  <ChevronRight className="size-4 text-[#37322f]/50 font-serif shrink-0 self-center hidden sm:block" />
+                  {/* FIX: hide chevron on mobile (already stacked vertically) */}
+                  <ChevronRight className="size-4 text-[#37322f]/50 shrink-0 self-center hidden sm:block" />
                   <div className="flex-1">
                     <CustomCalendar
                       value={dateRange.end}
-                      onChange={(v) =>
-                        setDateRange((prev) => ({ ...prev, end: v }))
-                      }
-                      placeholder="Select end date"
+                      onChange={(v) => setDateRange((prev) => ({ ...prev, end: v }))}
+                      placeholder="End date"
                       label="To"
                       minDate={dateRange.start || undefined}
                     />
                   </div>
                 </div>
                 {dateRange.start && dateRange.end && (
-                  <div className="mt-2.5 flex items-center gap-1.5 text-[11px] text-[#37322f]/50 dark:text-[#e5e1db]/50">
-                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#37322f]/40 dark:bg-[#e5e1db]/40" />
-                    Showing results from{" "}
-                    <span className="font-semibold text-[#37322f] dark:text-[#e5e1db]">
-                      {formatDateLabel(dateRange.start)}
-                    </span>{" "}
-                    to{" "}
-                    <span className="font-semibold text-[#37322f] dark:text-[#e5e1db]">
-                      {formatDateLabel(dateRange.end)}
-                    </span>
-                  </div>
+                  <p className="mt-2 text-[11px] text-[#37322f]/50">
+                    {formatDateLabel(dateRange.start)} → {formatDateLabel(dateRange.end)}
+                  </p>
                 )}
               </div>
 
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
-                  className="flex items-center justify-center gap-1 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/30 px-3 py-2 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/50 transition-all"
+                  className="flex items-center justify-center gap-1 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-100 transition-all"
                 >
-                  <X className="size-3.5" />
-                  Clear all filters
+                  <X className="size-3.5" /> Clear all filters
                 </button>
               )}
             </div>
@@ -286,11 +209,9 @@ export default function LinksList({ links, onDeleteLink }: LinksListProps) {
       </div>
 
       {dateFilteredLinks.length === 0 ? (
-        <div className="flex rounded-xl border border-[#37322f]/12 dark:border-[#e5e1db]/12 bg-white dark:bg-[#1a1a1a] p-8 text-center">
+        <div className="flex rounded-xl border border-[#37322f]/12 bg-white p-8 text-center">
           <div className="w-full">
-            <p className="text-sm text-[#37322f]/70 dark:text-[#e5e1db]/70">
-              No links match the selected filters
-            </p>
+            <p className="text-sm text-[#37322f]/70">No links match the selected filters</p>
           </div>
         </div>
       ) : (
@@ -301,78 +222,68 @@ export default function LinksList({ links, onDeleteLink }: LinksListProps) {
             return (
               <div
                 key={shortCode}
-                className="rounded-xl border border-[#37322f]/12 dark:border-[#e5e1db]/12 bg-white dark:bg-[#1a1a1a] p-4 shadow-sm transition-all hover:border-[#37322f]/30 dark:hover:border-[#e5e1db]/30"
+                className="rounded-xl border border-[#37322f]/12 bg-white p-3 sm:p-4 shadow-sm transition-all hover:border-[#37322f]/30"
               >
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="min-w-0 flex-1">
-                    <div className="mb-2 flex flex-wrap items-center gap-2">
-                      <span className="inline-flex items-center rounded-lg bg-[#37322f] dark:bg-[#e5e1db] px-3 py-1">
-                        <code className="font-mono text-sm text-white dark:text-[#1a1a1a]">
-                          {link.shortUrl}
-                        </code>
+                <div className="flex flex-col gap-3">
+                  {/* Top row: short URL + badges */}
+                  <div className="flex flex-wrap items-center gap-2 min-w-0">
+                    {/* FIX: short URL truncates instead of overflowing */}
+                    <span className="inline-flex items-center rounded-lg bg-[#37322f] px-3 py-1 max-w-full overflow-hidden">
+                      <code className="font-mono text-xs sm:text-sm text-white truncate">
+                        {link.shortUrl}
+                      </code>
+                    </span>
+                    <span className="text-xs text-[#37322f]/50 shrink-0">
+                      {new Date(link.createAt).toLocaleDateString()}
+                    </span>
+                    {expiry && (
+                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium shrink-0 ${expiry.className}`}>
+                        <Clock className="size-3" />{expiry.text}
                       </span>
-                      <span className="text-xs text-[#37322f]/50 dark:text-[#e5e1db]/50">
-                        {new Date(link.createAt).toLocaleDateString()}
-                      </span>
-                      {expiry && (
-                        <span
-                          className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${expiry.className}`}
-                        >
-                          <Clock className="size-3" />
-                          {expiry.text}
-                        </span>
-                      )}
-                    </div>
-                    <p className="truncate font-mono text-sm text-[#37322f]/70 dark:text-[#e5e1db]/70">
-                      {link.originalUrl}
-                    </p>
-                    <div className="mt-2 text-xs text-[#37322f]/50 dark:text-[#e5e1db]/50">
-                      <span className="font-medium text-[#37322f] dark:text-[#e5e1db]">
-                        {link.clickCount}
-                      </span>{" "}
-                      clicks
-                    </div>
+                    )}
                   </div>
-                  <div className="flex shrink-0 gap-2">
-                    <button
-                      onClick={() => handleCopyUrl(link.shortUrl)}
-                      className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition-all ${
-                        copiedUrl === link.shortUrl
-                          ? "border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-400"
-                          : "border-[#37322f]/12 dark:border-[#e5e1db]/12 bg-white dark:bg-[#2a2a2a] hover:bg-[#f7f5f3] dark:hover:bg-[#333]"
-                      }`}
-                    >
-                      {copiedUrl === link.shortUrl ? (
-                        <>
-                          <Check className="size-3.5" />
-                          <span className="hidden sm:inline">Copied</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="size-3.5" />
-                          <span className="hidden sm:inline">Copy</span>
-                        </>
-                      )}
-                    </button>
-                    <button
-                      disabled={expiry?.expired}
-                      onClick={() => handleUrlRedirect(link.shortUrl)}
-                      className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition-all ${
-                        expiry?.expired
-                          ? "cursor-not-allowed opacity-50"
-                          : "border-[#37322f]/12 dark:border-[#e5e1db]/12 bg-white dark:bg-[#2a2a2a] hover:bg-[#f7f5f3] dark:hover:bg-[#333]"
-                      }`}
-                    >
-                      <ExternalLink className="size-3.5" />
-                      <span className="hidden sm:inline">Open</span>
-                    </button>
-                    <button
-                      onClick={() => onDeleteLink(link.shortUrl)}
-                      className="flex items-center gap-1.5 rounded-lg border border-red-200 dark:border-red-800 bg-white dark:bg-[#2a2a2a] px-3 py-2 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30"
-                    >
-                      <Trash2 className="size-3.5" />
-                      <span className="hidden sm:inline">Delete</span>
-                    </button>
+
+                  {/* Original URL — FIX: break-all so long URLs wrap */}
+                  <p className="font-mono text-xs sm:text-sm text-[#37322f]/70 break-all">
+                    {link.originalUrl}
+                  </p>
+
+                  {/* Bottom row: clicks + actions */}
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <div className="text-xs text-[#37322f]/50">
+                      <span className="font-medium text-[#37322f]">{link.clickCount}</span> clicks
+                    </div>
+
+                    {/* FIX: action buttons always visible (removed hidden sm:inline) */}
+                    <div className="flex gap-1.5 sm:gap-2 flex-shrink-0">
+                      <button
+                        onClick={() => handleCopyUrl(link.shortUrl)}
+                        className={`flex items-center gap-1 sm:gap-1.5 rounded-lg border px-2 sm:px-3 py-1.5 sm:py-2 text-xs font-medium transition-all ${
+                          copiedUrl === link.shortUrl
+                            ? "border-green-200 bg-green-50 text-green-700"
+                            : "border-[#37322f]/12 bg-white hover:bg-[#f7f5f3]"
+                        }`}
+                      >
+                        {copiedUrl === link.shortUrl ? <><Check className="size-3" /><span>Copied</span></> : <><Copy className="size-3" /><span>Copy</span></>}
+                      </button>
+                      <button
+                        disabled={expiry?.expired}
+                        onClick={() => { window.location.href = link.shortUrl; }}
+                        className={`flex items-center gap-1 sm:gap-1.5 rounded-lg border px-2 sm:px-3 py-1.5 sm:py-2 text-xs font-medium transition-all ${
+                          expiry?.expired
+                            ? "cursor-not-allowed opacity-50 border-[#37322f]/12"
+                            : "border-[#37322f]/12 bg-white hover:bg-[#f7f5f3]"
+                        }`}
+                      >
+                        <ExternalLink className="size-3" /><span>Open</span>
+                      </button>
+                      <button
+                        onClick={() => onDeleteLink(link.shortUrl)}
+                        className="flex items-center gap-1 sm:gap-1.5 rounded-lg border border-red-200 bg-white px-2 sm:px-3 py-1.5 sm:py-2 text-xs font-medium text-red-600 hover:bg-red-50"
+                      >
+                        <Trash2 className="size-3" /><span>Delete</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
