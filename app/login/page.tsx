@@ -37,6 +37,7 @@ export default function Login() {
         setLoading(false);
         return;
       }
+      console.log("login response " + response);
       await refreshUser();
       router.push("/url");
     } catch (err) {

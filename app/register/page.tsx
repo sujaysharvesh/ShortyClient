@@ -38,21 +38,50 @@ export default function Register() {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-    if (formData.username.length < 3) { setError("Username must be at least 3 characters long"); setIsLoading(false); return; }
-    if (formData.password !== formData.confirmPassword) { setError("Passwords do not match"); setIsLoading(false); return; }
-    if (formData.password.length < 6) { setError("Password must be at least 6 characters long"); setIsLoading(false); return; }
+  
+    if (formData.username.length < 3) {
+      setError("Username must be at least 3 characters long");
+      setIsLoading(false);
+      return;
+    }
+  
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      setIsLoading(false);
+      return;
+    }
+  
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      setIsLoading(false);
+      return;
+    }
+  
     try {
       const response = await fetch(`${API_URL}/user/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ username: formData.username, email: formData.email, password: formData.password }),
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+        }),
       });
-      if (!response.ok) { setError("Registration failed"); setIsLoading(false); return; }
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        setError(data.message || "Registration failed");
+        return;
+      }
+  
       router.push("/login");
+  
     } catch (err) {
-      console.error("Registration error:", err);
-      setError("Something went wrong. Please try again.");
+      // console.error("Registration error:", err);
+      setError("Server not available. Please try again later.");
+    } finally {
       setIsLoading(false);
     }
   };
