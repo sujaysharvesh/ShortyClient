@@ -11,7 +11,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const router = useRouter();
-  const pathname = usePathname(); // ✅ hook must be here (top level)
+  const pathname = usePathname(); 
 
   const PUBLIC_ROUTES = [
     "/login",
@@ -26,7 +26,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setLoading(true);
 
-      // ✅ Skip auth check on public pages
       if (PUBLIC_ROUTES.includes(pathname)) {
         setLoading(false);
         return;

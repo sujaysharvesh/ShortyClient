@@ -21,6 +21,7 @@ export default function Login() {
     window.location.href = `${OAUTH_URL}/oauth2/authorize/google`;
   };
 
+  console.log("API_URL: " + API_URL);
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
