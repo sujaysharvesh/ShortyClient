@@ -148,9 +148,9 @@ export default function Page() {
     }
   };
 
-  useEffect(() => {
-    if (!loading && !user) router.replace("/login");
-  }, [loading, user, router]);
+  // useEffect(() => {
+  //   if (!loading && !user) router.replace("/login");
+  // }, [loading, user, router]);
 
   if (loading || fetching) {
     return (

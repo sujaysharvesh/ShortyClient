@@ -31,19 +31,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
+      console.log("Fetching user data from API..."  + API_URL);
       const res = await fetch(`${API_URL}/user/me`, {
+        method: "GET",
         credentials: "include",
       });
+
+      console.log("Fetch user response:", res);
 
       if (!res.ok) {
         if (res.status >= 500) {
           router.replace("/server-not-available");
           return;
         }
+      
         setUser(null);
+      
+        if (!PUBLIC_ROUTES.includes(pathname)) {
+          router.replace("/login");
+        }
+      
         return;
       }
-
       const data = await res.json();
       setUser(data);
 
